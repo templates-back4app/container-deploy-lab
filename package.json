@@ -1,0 +1,14 @@
+{
+  "name": "container-deploy-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A tiny Express app that deploys cleanly on Back4app Containers, plus one branch per deliberate deploy failure.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

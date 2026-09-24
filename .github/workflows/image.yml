@@ -1,0 +1,36 @@
+# Stack: GitHub Actions | File: .github/workflows/image.yml
+# Builds the Dockerfile of every pushed branch, prints the image size, then starts the
+# container and hits /healthz on 8080. On the break/* branches one of these steps is
+# supposed to fail — the step that goes red is the first clue the article talks about.
+name: image
+on:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: |
+          START=$(date +%s)
+          docker build --no-cache -t lab:${{ github.sha }} .
+          echo "build_seconds=$(( $(date +%s) - START ))" >> "$GITHUB_OUTPUT"
+        id: build
+      - name: Image size
+        run: |
+          SIZE=$(docker image inspect lab:${{ github.sha }} --format '{{.Size}}')
+          echo "branch: ${{ github.ref_name }}" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "build: ${{ steps.build.outputs.build_seconds }} s (no cache)" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "image: $SIZE bytes ($(( SIZE / 1048576 )) MB uncompressed)" | tee -a "$GITHUB_STEP_SUMMARY"
+          docker history lab:${{ github.sha }} --no-trunc --format 'table {{.Size}}\t{{.CreatedBy}}' | head -20
+      - name: Smoke run on 8080
+        run: |
+          docker run -d --rm --name lab -p 8080:8080 lab:${{ github.sha }}
+          sleep 3
+          docker logs lab
+          curl -fsS http://localhost:8080/healthz
+          curl -fsS http://localhost:8080/
+          docker stop lab
