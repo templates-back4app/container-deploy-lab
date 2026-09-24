@@ -6,6 +6,10 @@ const { version } = require("./package.json");
 
 const PORT = process.env.PORT || 8080;
 
+if (!process.env.REQUIRED_SECRET) {
+  throw new Error("REQUIRED_SECRET is not set (Settings → Environment)"); // exits before app.listen
+}
+
 const app = express();
 
 app.get("/", (req, res) => {
