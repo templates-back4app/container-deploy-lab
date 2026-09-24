@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/healthz", (req, res) => {
-  res.json({ ok: true, version, port: Number(PORT) });
+  res.status(500).json({ ok: false, version, reason: "simulated dependency failure" }); // the page still works
 });
 
 app.listen(PORT, () => {
