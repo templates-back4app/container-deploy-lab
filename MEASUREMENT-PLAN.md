@@ -61,6 +61,8 @@ Screenshots: only of things you ran; blur the account e-mail if it appears in th
 - uncompressed image size, `main` vs `break/big-image` (the platform's `Pushed image` line, if it shows a size, is compressed; label the two differently);
 - a second opinion on which step fails locally for each branch (build vs run vs health) — a GitHub runner, not the platform, so quote it only as "on a GitHub Actions runner".
 
+First results, September 24, 2026 (one run per branch, `ubuntu-latest`): `main` 163 MB / 11 s; `break/big-image` 1,083 MB / 24 s (6.6× the size, about 2× the build); `break/dockerfile-syntax` failed in the build step with `"/config/settings.json": not found` (BuildKit wording — the platform's builder is kaniko, so expect a different sentence for the same cause); the three crash-at-start branches passed the build and exited before the smoke curl; the two port branches passed the build, logged `listening on 3000` / `listening on 4000`, and the curl to 8080 was reset; `break/health-check-path` answered `500` to the smoke curl. Other branches' builds ranged 6–13 s on the same base image, which is runner noise, not a signal.
+
 ## 5. Results table (fill in; copy into the article and the README)
 
 | Branch | Build | Status badge | Click → READY / failure | First HTTP status (poller) | Log line that names the problem | Fix → READY |

@@ -66,7 +66,21 @@ The only change is `FROM node:22`, the default tag: Debian bookworm with gcc, g+
 
 ## What we measured
 
-Filled from the deploys of each branch; the article carries the same table with the log excerpts.
+**On a GitHub Actions runner** (`.github/workflows/image.yml`, `docker build --no-cache`, September 24, 2026): the healthy image is **163 MB** uncompressed and builds in **11 s**; the same app on `node:22` is **1,083 MB** and builds in **24 s**. One run per branch, sizes from `docker image inspect`, seconds from a `date` diff around `docker build`; runner speed varies, so read the ratio, not the seconds.
+
+| Branch | Build (no cache) | Image, uncompressed | Step that fails on the runner |
+|---|---|---|---|
+| `main` | 11 s | 163 MB | none — `/healthz` → `{"ok":true}` |
+| `break/wrong-port` | 11 s | 163 MB | Smoke run: app logs `listening on 3000`, curl to 8080 is reset |
+| `break/missing-dependency` | 11 s | 163 MB | Smoke run: container exits at start |
+| `break/bad-start-command` | 13 s | 163 MB | Smoke run: container exits at start |
+| `break/missing-env` | 6 s | 163 MB | Smoke run: container exits at start |
+| `break/health-check-path` | 8 s | 163 MB | Smoke run: `curl: (22) The requested URL returned error: 500` |
+| `break/dockerfile-syntax` | fails | — | Build: `"/config/settings.json": not found` |
+| `break/no-expose` | 6 s | 163 MB | Smoke run: app logs `listening on 4000`, curl to 8080 is reset |
+| `break/big-image` | 24 s | 1,083 MB | none — same app, 6.6× the image |
+
+**On Back4app Containers:** filled from the deploys of each branch; the article carries the same table with the log excerpts.
 
 | Branch | Build | Status after deploy | Click → READY / failure | Log line that names the problem |
 |---|---|---|---|---|

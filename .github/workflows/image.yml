@@ -28,9 +28,9 @@ jobs:
           docker history lab:${{ github.sha }} --no-trunc --format 'table {{.Size}}\t{{.CreatedBy}}' | head -20
       - name: Smoke run on 8080
         run: |
-          docker run -d --rm --name lab -p 8080:8080 lab:${{ github.sha }}
+          docker run -d --name lab -p 8080:8080 lab:${{ github.sha }}
           sleep 3
-          docker logs lab
+          docker logs lab            # no --rm above, so a container that exited at start still has a log
           curl -fsS http://localhost:8080/healthz
           curl -fsS http://localhost:8080/
-          docker stop lab
+          docker rm -f lab
