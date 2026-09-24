@@ -4,7 +4,7 @@
 const express = require("express");
 const { version } = require("./package.json");
 
-const PORT = process.env.PORT || 8080;
+const PORT = 4000; // no EXPOSE in the Dockerfile and no PORT handling: the platform gets no hint
 
 const app = express();
 
