@@ -3,13 +3,14 @@
 // It has one page, one health check, and it listens on the port the platform hands it.
 const express = require("express");
 const { version } = require("./package.json");
+const dayjs = require("dayjs"); // not in package.json or package-lock.json — npm ci never installs it
 
 const PORT = process.env.PORT || 8080;
 
 const app = express();
 
 app.get("/", (req, res) => {
-  res.type("text/plain").send(`container-deploy-lab v${version} · listening on ${PORT} · node ${process.version}\n`);
+  res.type("text/plain").send(`container-deploy-lab v${version} · listening on ${PORT} · node ${process.version} · ${dayjs().format()}\n`);
 });
 
 app.get("/healthz", (req, res) => {
