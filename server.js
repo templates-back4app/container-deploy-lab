@@ -4,7 +4,7 @@
 const express = require("express");
 const { version } = require("./package.json");
 
-const PORT = process.env.PORT || 8080;
+const PORT = 3000; // the platform expects 8080 (EXPOSE) and the app never reads process.env.PORT
 
 const app = express();
 
