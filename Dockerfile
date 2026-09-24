@@ -1,5 +1,5 @@
-# Stack: Docker | Node.js 22 (alpine) | File: Dockerfile
-FROM node:22-alpine
+# Stack: Docker | Node.js 22 (Debian bookworm, with gcc, g++, make and python3 preinstalled) | File: Dockerfile
+FROM node:22
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev
